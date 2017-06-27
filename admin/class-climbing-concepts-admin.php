@@ -100,8 +100,9 @@ class ClimbingConcepts_Admin {
                 $slug .= '_' . $action;
             }
             $this->page_hooks[] = add_submenu_page('climbing-concepts',
-                                                   sprintf(__('%1$s &lsaquo; %2$s', 'climbing-concepts'),
-                                                           $entry['page_title'], __('Climbing Concepts', 'climbing-concepts')),
+                                                   sprintf('%1$s &lsaquo; %2$s',
+                                                           $entry['page_title'],
+                                                           __('Climbing Concepts', 'climbing-concepts')),
                                                    $entry['admin_menu_title'],
                                                    $entry['required_cap'],
                                                    $slug,

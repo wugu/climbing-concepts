@@ -34,7 +34,7 @@ if ( ! defined( 'WPINC' ) ) {
  * The code that runs during plugin activation.
  * This action is documented in includes/class-climbing-concepts-activator.php
  */
-function activate_plugin_name() {
+function activate_climbing_concepts() {
     require_once plugin_dir_path( __FILE__ ) . 'includes/class-climbing-concepts-activator.php';
     ClimbingConcepts_Activator::activate();
 }
@@ -43,13 +43,13 @@ function activate_plugin_name() {
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-climbing-concepts-deactivator.php
  */
-function deactivate_plugin_name() {
+function deactivate_climbing_concepts() {
     require_once plugin_dir_path( __FILE__ ) . 'includes/class-climbing-concepts-deactivator.php';
     ClimbingConcepts_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_plugin_name' );
-register_deactivation_hook( __FILE__, 'deactivate_plugin_name' );
+register_activation_hook( __FILE__, 'activate_climbing_concepts' );
+register_deactivation_hook( __FILE__, 'deactivate_climbing_concepts' );
 
 /**
  * The core plugin class that is used to define internationalization,
@@ -66,10 +66,10 @@ require plugin_dir_path( __FILE__ ) . 'includes/class-climbing-concepts.php';
  *
  * @since    1.0.0
  */
-function run_plugin_name() {
+function run_climbing_concepts() {
 
     $plugin = new ClimbingConcepts();
     $plugin->run();
 
 }
-run_plugin_name();
+run_climbing_concepts();

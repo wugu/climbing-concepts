@@ -20,4 +20,4 @@ msgstr ""
 
 #: admin/class-climbing-concepts-admin.php:65
 msgid "Climbing Concepts"
-msgstr ""
+msgstr "Kletterkonzepte"

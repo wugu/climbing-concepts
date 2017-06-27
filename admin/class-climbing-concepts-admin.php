@@ -54,6 +54,34 @@ class ClimbingConcepts_Admin {
     }
 
     /**
+     * Add admin entry to the correct place in the admin menu.
+     *
+     * @since 1.0.0
+     */
+    public function add_admin_menu_entry() {
+        $callback = array($this, 'show_admin_page');
+
+        $admin_menu_entry_name = apply_filters('climbing_concepts_admin_menu_entry_name',
+                                               __('Climbing Concepts', 'climbing-concepts'));
+
+        $icon_url = 'dashicons-location-alt';
+        $min_access_cap = 'read';
+        $position = ($GLOBALS['_wp_last_object_menu'] + 1);
+
+        add_menu_page(__('Climbing Concepts', 'climbing-concepts'),
+                      $admin_menu_entry_name,
+                      $min_access_cap,
+                      'climbing_concepts',
+                      $callback,
+                      $icon_url,
+                      $position);
+    }
+
+    public function show_admin_page() {
+        echo '<p>Hello World!</p>';
+    }
+
+    /**
      * Register the stylesheets for the admin area.
      *
      * @since    1.0.0

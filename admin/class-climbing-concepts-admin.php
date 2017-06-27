@@ -40,6 +40,23 @@ class ClimbingConcepts_Admin {
     private $version;
 
     /**
+     * Actions that have a view and admin menu or nav tab menu entry.
+     *
+     * @since 1.0.0
+     * @var array
+     */
+    protected $view_actions = array();
+
+    /**
+     * Page hooks (i.e. names) WordPress uses for the TablePress admin screens,
+     * populated in add_admin_menu_entry().
+     *
+     * @since 1.0.0
+     * @var array
+     */
+    protected $page_hooks = array();
+
+    /**
      * Initialize the class and set its properties.
      *
      * @since    1.0.0
@@ -51,6 +68,7 @@ class ClimbingConcepts_Admin {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
 
+        $this->init_view_actions();
     }
 
     /**
@@ -65,16 +83,30 @@ class ClimbingConcepts_Admin {
                                                __('Climbing Concepts', 'climbing-concepts'));
 
         $icon_url = 'dashicons-location-alt';
-        $min_access_cap = 'read';
+        $min_access_cap = $this->view_actions['list-restrictions']['required_cap'];
         $position = ($GLOBALS['_wp_last_object_menu'] + 1);
 
         add_menu_page(__('Climbing Concepts', 'climbing-concepts'),
                       $admin_menu_entry_name,
                       $min_access_cap,
-                      'climbing_concepts',
+                      'climbing-concepts',
                       $callback,
                       $icon_url,
                       $position);
+
+        foreach ($this->view_actions as $action => $entry) {
+            $slug = 'climbing-concepts';
+            if ('list-restrictions' !== $action) {
+                $slug .= '_' . $action;
+            }
+            $this->page_hooks[] = add_submenu_page('climbing-concepts',
+                                                   sprintf(__('%1$s &lsaquo; %2$s', 'climbing-concepts'),
+                                                           $entry['page_title'], __('Climbing Concepts', 'climbing-concepts')),
+                                                   $entry['admin_menu_title'],
+                                                   $entry['required_cap'],
+                                                   $slug,
+                                                   $callback);
+        }
     }
 
     public function show_admin_page() {
@@ -132,4 +164,49 @@ class ClimbingConcepts_Admin {
 
     }
 
+    /**
+     * Init list of actions that have a view with their titles/names/caps.
+     *
+     * @since 1.0.0
+     */
+    protected function init_view_actions() {
+        $this->view_actions = array(
+            'list-restrictions' => array(
+                'page_title'       => __('Overview', 'climbing-concepts'),
+                'admin_menu_title' => __('Overview', 'climbing-concepts'),
+                'nav_tab_title'    => __('Overview', 'climbing-concepts'),
+                'required_cap'     => 'edit_pages',
+            ),
+            'restrictions' => array(
+                'page_title'       => __('Restrictions', 'climbing-concepts'),
+                'admin_menu_title' => __('Restrictions', 'climbing-concepts'),
+                'nav_tab_title'    => __('Restrictions', 'climbing-concepts'),
+                'required_cap'     => 'edit_pages',
+            ),
+            'zones' => array(
+                'page_title'       => __('Zones', 'climbing-concepts'),
+                'admin_menu_title' => __('Zones', 'climbing-concepts'),
+                'nav_tab_title'    => __('Zones', 'climbing-concepts'),
+                'required_cap'     => 'edit_pages',
+            ),
+            'regions' => array(
+                'page_title'       => __('Regions', 'climbing-concepts'),
+                'admin_menu_title' => __('Regions', 'climbing-concepts'),
+                'nav_tab_title'    => __('Regions', 'climbing-concepts'),
+                'required_cap'     => 'edit_pages',
+            ),
+            'concepts' => array(
+                'page_title'       => __('Concepts', 'climbing-concepts'),
+                'admin_menu_title' => __('Concepts', 'climbing-concepts'),
+                'nav_tab_title'    => __('Concepts', 'climbing-concepts'),
+                'required_cap'     => 'edit_pages',
+            ),
+        );
+
+        /**
+         * Filter the available Views/Actions and their parameters.
+         */
+        $this->view_actions = apply_filters('climbing_concepts_admin_view_actions',
+                                            $this->view_actions);
+    }
 }

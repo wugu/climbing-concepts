@@ -67,8 +67,6 @@ class ClimbingConcepts_Admin {
 
         $this->plugin_name = $plugin_name;
         $this->version = $version;
-
-        $this->init_view_actions();
     }
 
     /**
@@ -82,8 +80,10 @@ class ClimbingConcepts_Admin {
         $admin_menu_entry_name = apply_filters('climbing_concepts_admin_menu_entry_name',
                                                __('Climbing Concepts', 'climbing-concepts'));
 
-        $icon_url = 'dashicons-location-alt';
+        $this->init_view_actions();
         $min_access_cap = $this->view_actions['list-restrictions']['required_cap'];
+
+        $icon_url = 'dashicons-location-alt';
         $position = ($GLOBALS['_wp_last_object_menu'] + 1);
 
         add_menu_page(__('Climbing Concepts', 'climbing-concepts'),
@@ -111,6 +111,8 @@ class ClimbingConcepts_Admin {
     }
 
     public function show_admin_page() {
+        echo '<h1>' . esc_html__('Overview', 'climbing-concepts' ) . '</h1>';
+
         echo '<p>Hello World!</p>';
     }
 

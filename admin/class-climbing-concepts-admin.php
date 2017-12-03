@@ -57,6 +57,13 @@ class ClimbingConcepts_Admin {
     protected $page_hooks = array();
 
     /**
+     * Instance of the Admin Page View
+     *
+     * @var ClimbingCocepts_Admin
+     */
+    protected $page_view;
+
+    /**
      * Initialize the class and set its properties.
      *
      * @since    1.0.0
@@ -81,7 +88,7 @@ class ClimbingConcepts_Admin {
                                                __('Climbing Concepts', 'climbing-concepts'));
 
         $this->init_view_actions();
-        $min_access_cap = $this->view_actions['list-restrictions']['required_cap'];
+        $min_access_cap = $this->view_actions['overview']['required_cap'];
 
         $icon_url = 'dashicons-location-alt';
         $position = ($GLOBALS['_wp_last_object_menu'] + 1);
@@ -96,7 +103,7 @@ class ClimbingConcepts_Admin {
 
         foreach ($this->view_actions as $action => $entry) {
             $slug = 'climbing-concepts';
-            if ('list-restrictions' !== $action) {
+            if ('overview' !== $action) {
                 $slug .= '_' . $action;
             }
             $this->page_hooks[] = add_submenu_page('climbing-concepts',
@@ -110,10 +117,74 @@ class ClimbingConcepts_Admin {
         }
     }
 
+    public function add_admin_actions() {
+        foreach ( $this->page_hooks as $page_hook ) {
+            add_action("load-{$page_hook}", array($this, 'load_admin_page'));
+        }
+    }
+
+    public function load_admin_page() {
+        /*
+         * Determine the action from either the GET parameter (for sub-menu
+         * entries, and the main admin menu entry).
+         *
+         * Default: overview
+         */
+        $action = (!empty($_GET['action'])) ? $_GET['action'] : 'overview';
+
+        $this->init_view_actions();
+
+        if (!isset($this->view_actions[$action]) ||
+            !current_user_can($this->view_actions[$action]['required_cap'])) {
+            wp_die(__('You do not have sufficient permissions to access this page.', 'default'), 403);
+        }
+
+        /*
+         * Changes current screen ID and pagenow variable in JS, to enable
+         * automatic meta box JS handling.
+         */
+        set_current_screen("climbing_concepts_{$action}");
+
+        /*
+         * Set the $typenow global to the current CPT ourselves, as
+         * WP_Screen::get() does not determine the CPT correctly.
+         */
+        if (isset($_GET['post_type']) && post_type_exists($_GET['post_type'])) {
+            $GLOBALS['typenow'] = $_GET['post_type'];
+        }
+
+        $data = array(
+            'view_actions' => $this->view_actions,
+            'message' => (!empty($_GET['message'])) ? $_GET['message'] : false,
+        );
+
+        /*
+         * Depending on the action, load more necessary data for the
+         * corresponding view.
+         */
+        switch ($action) {
+        case 'overview':
+            break;
+        case 'restrictions':
+            break;
+        case 'rocks':
+            break;
+        case 'regions':
+            break;
+        case 'concepts':
+            break;
+        }
+
+        $data = apply_filters('climbing_concepts_view_data', $data, $action);
+
+        $this->page_view = $this->load_pageview($action, $data);
+    }
+
     public function show_admin_page() {
         echo '<h1>' . esc_html__('Overview', 'climbing-concepts' ) . '</h1>';
 
         echo '<p>Hello World!</p>';
+        /* $this->page_view->render(); */
     }
 
     /**
@@ -174,7 +245,7 @@ class ClimbingConcepts_Admin {
      */
     protected function init_view_actions() {
         $this->view_actions = array(
-            'list-restrictions' => array(
+            'overview' => array(
                 'page_title'       => __('Overview', 'climbing-concepts'),
                 'admin_menu_title' => __('Overview', 'climbing-concepts'),
                 'nav_tab_title'    => __('Overview', 'climbing-concepts'),
@@ -186,10 +257,10 @@ class ClimbingConcepts_Admin {
                 'nav_tab_title'    => __('Restrictions', 'climbing-concepts'),
                 'required_cap'     => 'edit_pages',
             ),
-            'zones' => array(
-                'page_title'       => __('Zones', 'climbing-concepts'),
-                'admin_menu_title' => __('Zones', 'climbing-concepts'),
-                'nav_tab_title'    => __('Zones', 'climbing-concepts'),
+            'rocks' => array(
+                'page_title'       => __('Rocks', 'climbing-concepts'),
+                'admin_menu_title' => __('Rocks', 'climbing-concepts'),
+                'nav_tab_title'    => __('Rocks', 'climbing-concepts'),
                 'required_cap'     => 'edit_pages',
             ),
             'regions' => array(
@@ -211,5 +282,11 @@ class ClimbingConcepts_Admin {
          */
         $this->view_actions = apply_filters('climbing_concepts_admin_view_actions',
                                             $this->view_actions);
+    }
+
+    private function load_pageview($pageview, $data = array()) {
+        echo '<p>Hello World!</p>';
+        //require_once plugin_dir_path(dirname(__FILE__)) . 'admin/class-climbing-concepts-admin-' . $pageview . '.php');
+        return array();
     }
 }
